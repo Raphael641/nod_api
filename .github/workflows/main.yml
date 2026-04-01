@@ -1,1 +1,40 @@
+name: Atualizar Mancha Criminal NOD
 
+on:
+  schedule:
+    # Roda toda segunda-feira às 05:00 da manhã
+    - cron: '0 5 * * 1'
+  workflow_dispatch: # Permite que você rode manualmente pelo botão no GitHub
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout do código
+      uses: actions/checkout@v3
+
+    - name: Configurar Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Instalar dependências
+      run: pip install pandas requests
+
+    - name: Processar Dados do ISP
+      run: python processar_isp.py
+
+    - name: Upload para o Servidor via FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: ./
+        server-dir: htdocs/ # Ajuste se a pasta do seu NOD for outra
+        exclude: |
+          **/.git*
+          **/.github*
+          processar_isp.py
+          README.md
