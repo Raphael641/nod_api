@@ -2,15 +2,14 @@ name: Atualizar Mancha Criminal NOD
 
 on:
   schedule:
-    # Roda toda segunda-feira às 05:00 da manhã
     - cron: '0 5 * * 1'
-  workflow_dispatch: # Permite rodar manualmente no botão "Run workflow"
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+    permissions:
+      contents: write # Permissão crucial para o robô salvar o arquivo no GitHub
 
     steps:
       - name: Checkout do código
@@ -22,14 +21,15 @@ jobs:
           python-version: '3.10'
 
       - name: Instalar dependências
-        run: |
-          pip install pandas requests
+        run: pip install pandas requests
 
       - name: Processar Dados do ISP
         run: python processar_isp.py
 
-      - name: Enviar JSON via Ponte PHP
+      - name: Salvar JSON no Repositório GitHub
         run: |
-          curl -X POST "http://nod.22web.org/receber_json.php?token=o79yYceXux" \
-               -H "Content-Type: application/json" \
-               --data-binary @isp_crime_stats.json
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add isp_crime_stats.json
+          git commit -m "Atualizando mancha criminal: $(date)" || echo "Sem mudanças"
+          git push
