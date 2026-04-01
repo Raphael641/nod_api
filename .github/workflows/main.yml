@@ -2,9 +2,9 @@ name: Atualizar Mancha Criminal NOD
 
 on:
   schedule:
-    # Roda toda segunda-feira às 05:00 da manhã
+    # Roda toda segunda-feira às 05:00 da manhã (Horário UTC)
     - cron: '0 5 * * 1'
-  workflow_dispatch: # Permite que você rode manualmente pelo botão no GitHub
+  workflow_dispatch: # Permite rodar manualmente no botão "Run workflow"
 
 jobs:
   build:
@@ -25,16 +25,7 @@ jobs:
     - name: Processar Dados do ISP
       run: python processar_isp.py
 
-    - name: Upload para o Servidor via FTP
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-      with:
-        server: ${{ secrets.FTP_SERVER }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: ./
-        server-dir: htdocs/ # Ajuste se a pasta do seu NOD for outra
-        exclude: |
-          **/.git*
-          **/.github*
-          processar_isp.py
-          README.md
+    - name: Upload Cirúrgico do JSON para o Servidor (Seguro)
+      # Usa o cURL para enviar APENAS o arquivo JSON, sem apagar seus arquivos PHP no InfinityFree
+      run: |
+        curl -T isp_crime_stats.json ftp://${{ secrets.FTP_SERVER }}/htdocs/isp_crime_stats.json --user ${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}
