@@ -2,30 +2,31 @@ name: Atualizar Mancha Criminal NOD
 
 on:
   schedule:
-    # Roda toda segunda-feira às 05:00 da manhã (Horário UTC)
     - cron: '0 5 * * 1'
-  workflow_dispatch: # Permite rodar manualmente no botão "Run workflow"
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
 
     steps:
     - name: Checkout do código
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Configurar Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
-        python-version: '3.9'
+        python-version: '3.10'
 
     - name: Instalar dependências
-      run: pip install pandas requests
+      run: |
+        pip install pandas requests beautifulsoup4
 
     - name: Processar Dados do ISP
       run: python processar_isp.py
 
-    - name: Upload Cirúrgico do JSON para o Servidor (Seguro)
-      # Usa o cURL para enviar APENAS o arquivo JSON, sem apagar seus arquivos PHP no InfinityFree
+    - name: Upload do JSON para o Servidor
       run: |
-        curl -T isp_crime_stats.json ftp://${{ secrets.FTP_SERVER }}/htdocs/isp_crime_stats.json --user ${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}
+        curl -T isp_crime_stats.json ftp://${{ secrets.FTP_SERVER }}/htdocs/isp_crime_stats.json --user ${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }} --ftp-create-dirs
