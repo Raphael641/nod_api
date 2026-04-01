@@ -1,10 +1,10 @@
 import pandas as pd
 import json
 import requests
-import os
+from bs4 import BeautifulSoup
 import sys
 
-# Dicionário de Delegacias (Completo para Capital)
+# Dicionário de Coordenadas das Delegacias (Capital RJ)
 geo_dps = {
     "001": {"lat": -22.8975, "lng": -43.1802}, "004": {"lat": -22.9125, "lng": -43.1883},
     "005": {"lat": -22.9134, "lng": -43.1855}, "006": {"lat": -22.9101, "lng": -43.2012},
@@ -26,47 +26,48 @@ geo_dps = {
     "043": {"lat": -22.9388, "lng": -43.5411}, "044": {"lat": -22.8711, "lng": -43.3188}
 }
 
-def download_and_process():
-    # Link Oficial (tentando sem HTTPS primeiro para evitar bloqueio de certificado)
-    url = "http://www.ispdados.rj.gov.br/Arquivos/BaseMensalDelegaciaSerieHistorica.csv"
-    
-    # Cabeçalhos para fingir que somos um navegador Chrome no Windows
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
-        'Accept': 'text/csv'
-    }
-    
-    print(f"Tentando download via Chrome-Agent: {url}")
+def get_latest_isp_url():
+    base_url = "https://www.ispdados.rj.gov.br/estatistica.html"
+    headers = {'User-Agent': 'Mozilla/5.0'}
+    try:
+        response = requests.get(base_url, headers=headers, verify=False)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        # Procura por links que contenham "BaseMensalDelegaciaSerieHistorica"
+        for link in soup.find_all('a', href=True):
+            if "BaseMensalDelegaciaSerieHistorica" in link['href']:
+                full_url = link['href']
+                if not full_url.startswith('http'):
+                    full_url = "https://www.ispdados.rj.gov.br/" + full_url.replace("../", "")
+                return full_url
+    except Exception as e:
+        print(f"Erro ao buscar URL: {e}")
+    return None
+
+def process():
+    url = get_latest_isp_url()
+    if not url:
+        print("Não foi possível encontrar o link de download no site do ISP.")
+        sys.exit(1)
+        
+    print(f"URL encontrada: {url}")
     
     try:
-        # Tenta baixar com timeout e sem verificar SSL (mais robusto para órgãos públicos)
-        response = requests.get(url, headers=headers, timeout=60)
-        
-        if response.status_code != 200:
-            print(f"Falha no link HTTP (Status {response.status_code}). Tentando HTTPS...")
-            response = requests.get(url.replace("http://", "https://"), headers=headers, timeout=60, verify=False)
-
-        if response.status_code == 200:
-            with open("temp.csv", "wb") as f:
-                f.write(response.content)
-            print("Arquivo baixado com sucesso!")
-        else:
-            print(f"O servidor do ISP-RJ retornou erro {response.status_code}. O site pode estar fora do ar.")
-            sys.exit(1)
-
-        # Processamento
+        # Download do CSV
+        res = requests.get(url, verify=False, timeout=60)
+        with open("temp.csv", "wb") as f:
+            f.write(res.content)
+            
+        # Processamento com Pandas
         df = pd.read_csv("temp.csv", sep=';', encoding='iso-8859-1', low_memory=False)
         df.columns = [c.lower().strip() for c in df.columns]
         
+        # Filtra anos recentes
         ultimo_ano = df['ano'].max()
-        print(f"Extraindo dados do ano: {ultimo_ano}")
+        df_recente = df[df['ano'] >= (ultimo_ano - 1)].copy()
         
-        df_recente = df[df['ano'] == ultimo_ano].copy()
         colunas_crime = ['roubo_veiculo', 'roubo_celular', 'roubo_rua', 'hom_doloso']
-        
         for col in colunas_crime:
-            if col in df_recente.columns:
-                df_recente[col] = pd.to_numeric(df_recente[col], errors='coerce').fillna(0)
+            df_recente[col] = pd.to_numeric(df_recente[col], errors='coerce').fillna(0)
 
         heatmap_data = []
         for distrito, group in df_recente.groupby('distrito'):
@@ -76,18 +77,17 @@ def download_and_process():
                     "lat": geo_dps[cod_dp]["lat"],
                     "lng": geo_dps[cod_dp]["lng"],
                     "total": int(group[colunas_crime].sum().sum()),
-                    "veiculos": int(group.get('roubo_veiculo', 0).sum()),
-                    "homicidios": int(group.get('hom_doloso', 0).sum())
+                    "veiculos": int(group['roubo_veiculo'].sum()),
+                    "homicidios": int(group['hom_doloso'].sum())
                 })
         
         with open('isp_crime_stats.json', 'w', encoding='utf-8') as f:
             json.dump(heatmap_data, f)
         
-        print("Sucesso: Arquivo JSON de inteligência territorial gerado!")
-
+        print(f"Sucesso! {len(heatmap_data)} DPs mapeadas.")
     except Exception as e:
-        print(f"Erro fatal: {str(e)}")
+        print(f"Erro no processamento: {e}")
         sys.exit(1)
 
 if __name__ == "__main__":
-    download_and_process()
+    process()
