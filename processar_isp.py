@@ -1,6 +1,6 @@
 import pandas as pd
 import json
-import os
+import os 
 
 # Dicionário de Coordenadas das Delegacias da Capital (RJ)
 # Mapeia o código da DP para Latitude e Longitude
