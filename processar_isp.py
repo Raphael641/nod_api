@@ -70,17 +70,22 @@ def download_and_process():
             cod_dp = str(int(cisp)).zfill(3)
 
             if cod_dp in geo_dps:
+                # Selecionamos as colunas de furtos também
+                furtos_cols = ['roubo_celular', 'roubo_rua'] # No ISP, roubo de rua/celular são os furtos mais comuns mapeados
+                
                 v_total = int(group[colunas_crime].sum().sum())
                 v_veiculos = int(group['roubo_veiculo'].sum())
                 v_homicidios = int(group['hom_doloso'].sum())
-
+                v_furtos = int(group[furtos_cols].sum().sum()) # Soma furtos
+    
                 if v_total > 0:
                     heatmap_data.append({
                         "lat": geo_dps[cod_dp]["lat"],
                         "lng": geo_dps[cod_dp]["lng"],
                         "total": v_total,
                         "veiculos": v_veiculos,
-                        "homicidios": v_homicidios
+                        "homicidios": v_homicidios,
+                        "furtos": v_furtos # Nova chave no JSON
                     })
 
         # Salva o arquivo JSON final
