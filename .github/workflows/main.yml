@@ -28,7 +28,8 @@ jobs:
     - name: Processar Dados do ISP
       run: python processar_isp.py
 
-    - name: Upload do JSON para o Servidor (Modo Seguro)
-      # Corrigida a indentação e adicionado comando robusto
+    - name: Enviar JSON via Ponte PHP
       run: |
-        curl -v --ftp-pasv -T isp_crime_stats.json "ftp://ftpupload.net/htdocs/isp_crime_stats.json" --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}"
+        curl -X POST "http://nod.22web.org/receber_json.php?token=o79yYceXux" \
+             -H "Content-Type: application/json" \
+             --data-binary @isp_crime_stats.json
