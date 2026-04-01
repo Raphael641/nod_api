@@ -28,6 +28,7 @@ jobs:
     - name: Processar Dados do ISP
       run: python processar_isp.py
 
-    - name: Upload do JSON para o Servidor (Curl)
+    - name: Upload do JSON para o Servidor (Modo Seguro)
+      # Corrigida a indentação e adicionado comando robusto
       run: |
-        curl -T isp_crime_stats.json ftp://${{ secrets.FTP_SERVER }}/htdocs/isp_crime_stats.json --user ${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }} --ftp-create-dirs
+        curl -v --ftp-pasv -T isp_crime_stats.json "ftp://ftpupload.net/htdocs/isp_crime_stats.json" --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}"
