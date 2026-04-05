@@ -1,8 +1,8 @@
 [
   {
-    "lat": -22.8975,
+    "lat": -22.8971,
     "lng": -43.1802,
-    "bairro": "Centro",
+    "bairro": "CISP 001",
     "pedestres": 899,
     "veiculos": 1,
     "letalidade": 23,
@@ -11,9 +11,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9125,
-    "lng": -43.1883,
-    "bairro": "Lapa",
+    "lat": -22.9048,
+    "lng": -43.1906,
+    "bairro": "CISP 004",
     "pedestres": 362,
     "veiculos": 5,
     "letalidade": 38,
@@ -22,9 +22,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9134,
-    "lng": -43.1855,
-    "bairro": "Gamboa",
+    "lat": -22.9135,
+    "lng": -43.1788,
+    "bairro": "CISP 005",
     "pedestres": 1014,
     "veiculos": 3,
     "letalidade": 59,
@@ -33,9 +33,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9101,
-    "lng": -43.2012,
-    "bairro": "Cidade Nova",
+    "lat": -22.911,
+    "lng": -43.2005,
+    "bairro": "CISP 006",
     "pedestres": 168,
     "veiculos": 11,
     "letalidade": 63,
@@ -44,9 +44,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9254,
-    "lng": -43.2039,
-    "bairro": "São Cristóvão",
+    "lat": -22.9192,
+    "lng": -43.1837,
+    "bairro": "CISP 007",
     "pedestres": 183,
     "veiculos": 3,
     "letalidade": 15,
@@ -55,9 +55,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9265,
-    "lng": -43.1782,
-    "bairro": "Catumbi",
+    "lat": -22.9281,
+    "lng": -43.1764,
+    "bairro": "CISP 009",
     "pedestres": 589,
     "veiculos": 5,
     "letalidade": 38,
@@ -66,9 +66,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9515,
-    "lng": -43.1911,
-    "bairro": "Botafogo",
+    "lat": -22.9507,
+    "lng": -43.1842,
+    "bairro": "CISP 010",
     "pedestres": 200,
     "veiculos": 5,
     "letalidade": 31,
@@ -88,9 +88,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9711,
-    "lng": -43.1844,
-    "bairro": "Copacabana",
+    "lat": -22.9698,
+    "lng": -43.1856,
+    "bairro": "CISP 012",
     "pedestres": 248,
     "veiculos": 0,
     "letalidade": 43,
@@ -99,9 +99,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9832,
-    "lng": -43.1925,
-    "bairro": "Ipanema",
+    "lat": -22.984,
+    "lng": -43.195,
+    "bairro": "CISP 013",
     "pedestres": 117,
     "veiculos": 1,
     "letalidade": 30,
@@ -110,9 +110,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9845,
-    "lng": -43.2231,
-    "bairro": "Leblon",
+    "lat": -22.983,
+    "lng": -43.2223,
+    "bairro": "CISP 014",
     "pedestres": 545,
     "veiculos": 1,
     "letalidade": 31,
@@ -121,9 +121,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9754,
-    "lng": -43.2322,
-    "bairro": "Gávea",
+    "lat": -22.9774,
+    "lng": -43.2323,
+    "bairro": "CISP 015",
     "pedestres": 94,
     "veiculos": 7,
     "letalidade": 20,
@@ -132,9 +132,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -23.0019,
-    "lng": -43.3444,
-    "bairro": "Barra da Tijuca",
+    "lat": -23.0016,
+    "lng": -43.3204,
+    "bairro": "CISP 016",
     "pedestres": 219,
     "veiculos": 9,
     "letalidade": 86,
@@ -143,9 +143,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.8982,
-    "lng": -43.2215,
-    "bairro": "São Cristóvão",
+    "lat": -22.8988,
+    "lng": -43.2218,
+    "bairro": "CISP 017",
     "pedestres": 130,
     "veiculos": 13,
     "letalidade": 30,
@@ -154,9 +154,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9351,
-    "lng": -43.2195,
-    "bairro": "Tijuca",
+    "lat": -22.913,
+    "lng": -43.2126,
+    "bairro": "CISP 018",
     "pedestres": 175,
     "veiculos": 23,
     "letalidade": 31,
@@ -165,9 +165,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9234,
-    "lng": -43.2355,
-    "bairro": "Méier",
+    "lat": -22.9262,
+    "lng": -43.2307,
+    "bairro": "CISP 019",
     "pedestres": 133,
     "veiculos": 19,
     "letalidade": 46,
@@ -176,9 +176,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9155,
-    "lng": -43.2422,
-    "bairro": "Abolição",
+    "lat": -22.9174,
+    "lng": -43.2452,
+    "bairro": "CISP 020",
     "pedestres": 90,
     "veiculos": 10,
     "letalidade": 29,
@@ -187,9 +187,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.8624,
-    "lng": -43.2544,
-    "bairro": "Inhaúma",
+    "lat": -22.8653,
+    "lng": -43.2536,
+    "bairro": "CISP 021",
     "pedestres": 156,
     "veiculos": 33,
     "letalidade": 72,
@@ -198,9 +198,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.8355,
-    "lng": -43.2811,
-    "bairro": "Penha",
+    "lat": -22.8363,
+    "lng": -43.2796,
+    "bairro": "CISP 022",
     "pedestres": 54,
     "veiculos": 34,
     "letalidade": 46,
@@ -209,9 +209,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9133,
-    "lng": -43.2711,
-    "bairro": "Engenho Novo",
+    "lat": -22.9015,
+    "lng": -43.2801,
+    "bairro": "CISP 023",
     "pedestres": 89,
     "veiculos": 16,
     "letalidade": 23,
@@ -220,9 +220,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.8955,
-    "lng": -43.2988,
-    "bairro": "Piedade",
+    "lat": -22.8941,
+    "lng": -43.3032,
+    "bairro": "CISP 024",
     "pedestres": 70,
     "veiculos": 55,
     "letalidade": 51,
@@ -231,9 +231,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.8944,
-    "lng": -43.3244,
-    "bairro": "Madureira",
+    "lat": -22.9022,
+    "lng": -43.2662,
+    "bairro": "CISP 025",
     "pedestres": 46,
     "veiculos": 18,
     "letalidade": 36,
@@ -253,9 +253,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.8344,
-    "lng": -43.3422,
-    "bairro": "Irajá",
+    "lat": -22.8465,
+    "lng": -43.3134,
+    "bairro": "CISP 027",
     "pedestres": 120,
     "veiculos": 84,
     "letalidade": 71,
@@ -297,9 +297,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -23.0188,
-    "lng": -43.4611,
-    "bairro": "Recreio",
+    "lat": -22.8375,
+    "lng": -43.3965,
+    "bairro": "CISP 031",
     "pedestres": 87,
     "veiculos": 43,
     "letalidade": 38,
@@ -308,9 +308,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9188,
-    "lng": -43.3711,
-    "bairro": "Jacarepaguá",
+    "lat": -22.9234,
+    "lng": -43.3645,
+    "bairro": "CISP 032",
     "pedestres": 190,
     "veiculos": 41,
     "letalidade": 118,
@@ -319,9 +319,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.8722,
-    "lng": -43.4211,
-    "bairro": "Realengo",
+    "lat": -22.8756,
+    "lng": -43.4284,
+    "bairro": "CISP 033",
     "pedestres": 61,
     "veiculos": 23,
     "letalidade": 97,
@@ -330,9 +330,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.8788,
-    "lng": -43.4644,
-    "bairro": "Bangu",
+    "lat": -22.876,
+    "lng": -43.4651,
+    "bairro": "CISP 034",
     "pedestres": 92,
     "veiculos": 33,
     "letalidade": 179,
@@ -341,9 +341,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9011,
-    "lng": -43.5611,
-    "bairro": "Campo Grande",
+    "lat": -22.8998,
+    "lng": -43.5601,
+    "bairro": "CISP 035",
     "pedestres": 105,
     "veiculos": 38,
     "letalidade": 225,
@@ -352,9 +352,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9155,
-    "lng": -43.6844,
-    "bairro": "Santa Cruz",
+    "lat": -22.9242,
+    "lng": -43.6841,
+    "bairro": "CISP 036",
     "pedestres": 50,
     "veiculos": 7,
     "letalidade": 144,
@@ -363,9 +363,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.8188,
-    "lng": -43.2044,
-    "bairro": "Ilha do Governador",
+    "lat": -22.8125,
+    "lng": -43.2016,
+    "bairro": "CISP 037",
     "pedestres": 34,
     "veiculos": 4,
     "letalidade": 66,
@@ -374,9 +374,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.8311,
-    "lng": -43.3155,
-    "bairro": "Brás de Pina",
+    "lat": -22.8329,
+    "lng": -43.3023,
+    "bairro": "CISP 038",
     "pedestres": 81,
     "veiculos": 52,
     "letalidade": 53,
@@ -385,9 +385,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.8122,
-    "lng": -43.3444,
-    "bairro": "Pavuna",
+    "lat": -22.8136,
+    "lng": -43.3644,
+    "bairro": "CISP 039",
     "pedestres": 111,
     "veiculos": 88,
     "letalidade": 60,
@@ -396,9 +396,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.8255,
-    "lng": -43.3011,
-    "bairro": "Vigário Geral",
+    "lat": -22.845,
+    "lng": -43.3444,
+    "bairro": "CISP 040",
     "pedestres": 61,
     "veiculos": 30,
     "letalidade": 34,
@@ -407,9 +407,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.8752,
-    "lng": -43.3411,
-    "bairro": "Rocha Miranda",
+    "lat": -22.915,
+    "lng": -43.3444,
+    "bairro": "CISP 041",
     "pedestres": 61,
     "veiculos": 23,
     "letalidade": 34,
@@ -418,9 +418,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.8455,
-    "lng": -43.3811,
-    "bairro": "Coelho Neto",
+    "lat": -23.0232,
+    "lng": -43.4735,
+    "bairro": "CISP 042",
     "pedestres": 94,
     "veiculos": 9,
     "letalidade": 81,
@@ -429,9 +429,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9388,
-    "lng": -43.5411,
-    "bairro": "Guaratiba",
+    "lat": -22.9838,
+    "lng": -43.6264,
+    "bairro": "CISP 043",
     "pedestres": 31,
     "veiculos": 11,
     "letalidade": 108,
@@ -440,9 +440,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.8711,
-    "lng": -43.3188,
-    "bairro": "Marechal Hermes",
+    "lat": -22.8763,
+    "lng": -43.2778,
+    "bairro": "CISP 044",
     "pedestres": 83,
     "veiculos": 75,
     "letalidade": 28,
@@ -561,9 +561,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.8542,
-    "lng": -43.2555,
-    "bairro": "Complexo do Alemão",
+    "lat": -22.9068,
+    "lng": -43.1729,
+    "bairro": "Região 059",
     "pedestres": 221,
     "veiculos": 116,
     "letalidade": 123,
@@ -572,9 +572,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.8688,
-    "lng": -43.2444,
-    "bairro": "Maré",
+    "lat": -22.9068,
+    "lng": -43.1729,
+    "bairro": "Região 060",
     "pedestres": 50,
     "veiculos": 57,
     "letalidade": 88,
@@ -583,9 +583,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9888,
-    "lng": -43.2511,
-    "bairro": "Rocinha",
+    "lat": -22.9068,
+    "lng": -43.1729,
+    "bairro": "Região 061",
     "pedestres": 4,
     "veiculos": 2,
     "letalidade": 26,
@@ -594,9 +594,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9955,
-    "lng": -43.2411,
-    "bairro": "Vidigal",
+    "lat": -22.9068,
+    "lng": -43.1729,
+    "bairro": "Região 062",
     "pedestres": 55,
     "veiculos": 34,
     "letalidade": 59,
@@ -605,9 +605,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9388,
-    "lng": -43.3911,
-    "bairro": "Cidade de Deus",
+    "lat": -22.9068,
+    "lng": -43.1729,
+    "bairro": "Região 063",
     "pedestres": 14,
     "veiculos": 0,
     "letalidade": 48,
