@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Busca todo o histórico para evitar conflitos
       
       - name: Configurar Python
         uses: actions/setup-python@v5
@@ -37,17 +39,47 @@ jobs:
         run: |
           if [ -f "isp_crime_stats.json" ]; then
             echo "✅ JSON gerado com sucesso!"
-            echo "📊 Conteúdo:"
+            echo "📊 Tamanho: $(wc -c < isp_crime_stats.json) bytes"
+            echo "📝 Primeiras linhas:"
             head -c 500 isp_crime_stats.json
           else
             echo "❌ Falha na geração do JSON"
             exit 1
           fi
       
-      - name: Commit e push
+      - name: Configurar Git e fazer push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Configurar usuário
           git config --global user.name "NOD Bot"
-          git config --global user.email "nod-bot@localhost"
+          git config --global user.email "nod-bot@users.noreply.github.com"
+          
+          # Buscar as últimas alterações do remoto
+          git fetch origin main
+          
+          # Fazer merge ou rebase para resolver conflitos
+          git pull origin main --no-rebase --autostash || true
+          
+          # Adicionar o arquivo
           git add isp_crime_stats.json
-          git commit -m "Atualização ISP-RJ - $(date '+%Y-%m-%d %H:%M')" || echo "Sem mudanças"
-          git push
+          
+          # Verificar se há mudanças para commit
+          if git diff --cached --quiet; then
+            echo "📭 Sem alterações no arquivo JSON"
+          else
+            # Commit das mudanças
+            git commit -m "🤖 Atualização automática ISP-RJ - $(date '+%Y-%m-%d %H:%M:%S')"
+            
+            # Tentar push com retry
+            for i in 1 2 3; do
+              if git push origin main; then
+                echo "✅ Push realizado com sucesso!"
+                break
+              else
+                echo "⚠️ Tentativa $i falhou, tentando novamente..."
+                git pull origin main --rebase
+                sleep 2
+              fi
+            done
+          fi
