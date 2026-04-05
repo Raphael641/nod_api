@@ -561,9 +561,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9068,
-    "lng": -43.1729,
-    "bairro": "Região 059",
+    "lat": -22.8542,
+    "lng": -43.2555,
+    "bairro": "Complexo do Alemão",
     "pedestres": 221,
     "veiculos": 116,
     "letalidade": 123,
@@ -572,9 +572,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9068,
-    "lng": -43.1729,
-    "bairro": "Região 060",
+    "lat": -22.8688,
+    "lng": -43.2444,
+    "bairro": "Maré",
     "pedestres": 50,
     "veiculos": 57,
     "letalidade": 88,
@@ -583,9 +583,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9068,
-    "lng": -43.1729,
-    "bairro": "Região 061",
+    "lat": -22.9888,
+    "lng": -43.2511,
+    "bairro": "Rocinha",
     "pedestres": 4,
     "veiculos": 2,
     "letalidade": 26,
@@ -594,9 +594,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9068,
-    "lng": -43.1729,
-    "bairro": "Região 062",
+    "lat": -22.9955,
+    "lng": -43.2411,
+    "bairro": "Vidigal",
     "pedestres": 55,
     "veiculos": 34,
     "letalidade": 59,
@@ -605,9 +605,9 @@
     "fonte": "isp_oficial"
   },
   {
-    "lat": -22.9068,
-    "lng": -43.1729,
-    "bairro": "Região 063",
+    "lat": -22.9388,
+    "lng": -43.3911,
+    "bairro": "Cidade de Deus",
     "pedestres": 14,
     "veiculos": 0,
     "letalidade": 48,
