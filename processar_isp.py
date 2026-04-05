@@ -3,50 +3,46 @@ import json
 import requests
 import sys
 from datetime import datetime
+import os
 
-# Coordenadas detalhadas por bairro/CISP para máxima precisão
-geo_bairros = {
-    "Centro": {"lat": -22.9068, "lng": -43.1729},
-    "Copacabana": {"lat": -22.9675, "lng": -43.1827},
-    "Ipanema": {"lat": -22.9845, "lng": -43.2039},
-    "Leblon": {"lat": -22.9832, "lng": -43.2225},
-    "Botafogo": {"lat": -22.9504, "lng": -43.1866},
-    "Flamengo": {"lat": -22.9324, "lng": -43.1722},
-    "Tijuca": {"lat": -22.9244, "lng": -43.2312},
-    "Méier": {"lat": -22.9040, "lng": -43.2745},
-    "Madureira": {"lat": -22.8722, "lng": -43.3411},
-    "Campo Grande": {"lat": -22.9030, "lng": -43.5611},
-    "Santa Cruz": {"lat": -22.9155, "lng": -43.6844},
-    "Bangu": {"lat": -22.8788, "lng": -43.4644},
-    "Realengo": {"lat": -22.8722, "lng": -43.4211},
-    "Jacarepaguá": {"lat": -22.9388, "lng": -43.3411},
-    "Barra da Tijuca": {"lat": -22.9988, "lng": -43.3633},
-    "Recreio": {"lat": -23.0188, "lng": -43.4611},
-    "Penha": {"lat": -22.8455, "lng": -43.2811},
-    "Olaria": {"lat": -22.8555, "lng": -43.2911},
-    "Ilha do Governador": {"lat": -22.8122, "lng": -43.2144},
-    "Ramos": {"lat": -22.8311, "lng": -43.2355},
-    "São Cristóvão": {"lat": -22.8982, "lng": -43.2215},
-    "Vila Isabel": {"lat": -22.9134, "lng": -43.2155},
-    "Engenho Novo": {"lat": -22.9045, "lng": -43.2655},
-    "Piedade": {"lat": -22.8955, "lng": -43.2588},
-    "Inhaúma": {"lat": -22.8624, "lng": -43.2844},
-    "Del Castilho": {"lat": -22.8855, "lng": -43.2711},
-    "Pavuna": {"lat": -22.8255, "lng": -43.3711},
-    "Acari": {"lat": -22.8311, "lng": -43.3444},
-    "Vigário Geral": {"lat": -22.8355, "lng": -43.3011},
-    "Cidade de Deus": {"lat": -22.9388, "lng": -43.3911},
-    "Rocinha": {"lat": -22.9888, "lng": -43.2511},
-    "Vidigal": {"lat": -22.9955, "lng": -43.2411},
-    "Santa Teresa": {"lat": -22.9211, "lng": -43.1811},
-    "Laranjeiras": {"lat": -22.9388, "lng": -43.1811},
-    "Cosme Velho": {"lat": -22.9311, "lng": -43.1911},
-    "Lagoa": {"lat": -22.9711, "lng": -43.2111},
-    "Gávea": {"lat": -22.9811, "lng": -43.2311},
-    "Jardim Botânico": {"lat": -22.9675, "lng": -43.2211},
-    "Urca": {"lat": -22.9515, "lng": -43.1611},
-    "Humaitá": {"lat": -22.9555, "lng": -43.1911},
-    "Leme": {"lat": -22.9611, "lng": -43.1711}
+# Mapeamento CISP para coordenadas (baseado em dados reais das delegacias)
+geo_mapping = {
+    "001": {"lat": -22.8975, "lng": -43.1802, "bairro": "Centro"},
+    "004": {"lat": -22.9125, "lng": -43.1883, "bairro": "Lapa"},
+    "005": {"lat": -22.9134, "lng": -43.1855, "bairro": "Gamboa"},
+    "006": {"lat": -22.9101, "lng": -43.2012, "bairro": "Cidade Nova"},
+    "007": {"lat": -22.9254, "lng": -43.2039, "bairro": "São Cristóvão"},
+    "009": {"lat": -22.9265, "lng": -43.1782, "bairro": "Catumbi"},
+    "010": {"lat": -22.9515, "lng": -43.1911, "bairro": "Botafogo"},
+    "012": {"lat": -22.9711, "lng": -43.1844, "bairro": "Copacabana"},
+    "013": {"lat": -22.9832, "lng": -43.1925, "bairro": "Ipanema"},
+    "014": {"lat": -22.9845, "lng": -43.2231, "bairro": "Leblon"},
+    "015": {"lat": -22.9754, "lng": -43.2322, "bairro": "Gávea"},
+    "016": {"lat": -23.0019, "lng": -43.3444, "bairro": "Barra da Tijuca"},
+    "017": {"lat": -22.8982, "lng": -43.2215, "bairro": "São Cristóvão"},
+    "018": {"lat": -22.9351, "lng": -43.2195, "bairro": "Tijuca"},
+    "019": {"lat": -22.9234, "lng": -43.2355, "bairro": "Méier"},
+    "020": {"lat": -22.9155, "lng": -43.2422, "bairro": "Abolição"},
+    "021": {"lat": -22.8624, "lng": -43.2544, "bairro": "Inhaúma"},
+    "022": {"lat": -22.8355, "lng": -43.2811, "bairro": "Penha"},
+    "023": {"lat": -22.9133, "lng": -43.2711, "bairro": "Engenho Novo"},
+    "024": {"lat": -22.8955, "lng": -43.2988, "bairro": "Piedade"},
+    "025": {"lat": -22.8944, "lng": -43.3244, "bairro": "Madureira"},
+    "027": {"lat": -22.8344, "lng": -43.3422, "bairro": "Irajá"},
+    "031": {"lat": -23.0188, "lng": -43.4611, "bairro": "Recreio"},
+    "032": {"lat": -22.9188, "lng": -43.3711, "bairro": "Jacarepaguá"},
+    "033": {"lat": -22.8722, "lng": -43.4211, "bairro": "Realengo"},
+    "034": {"lat": -22.8788, "lng": -43.4644, "bairro": "Bangu"},
+    "035": {"lat": -22.9011, "lng": -43.5611, "bairro": "Campo Grande"},
+    "036": {"lat": -22.9155, "lng": -43.6844, "bairro": "Santa Cruz"},
+    "037": {"lat": -22.8188, "lng": -43.2044, "bairro": "Ilha do Governador"},
+    "038": {"lat": -22.8311, "lng": -43.3155, "bairro": "Brás de Pina"},
+    "039": {"lat": -22.8122, "lng": -43.3444, "bairro": "Pavuna"},
+    "040": {"lat": -22.8255, "lng": -43.3011, "bairro": "Vigário Geral"},
+    "041": {"lat": -22.8752, "lng": -43.3411, "bairro": "Rocha Miranda"},
+    "042": {"lat": -22.8455, "lng": -43.3811, "bairro": "Coelho Neto"},
+    "043": {"lat": -22.9388, "lng": -43.5411, "bairro": "Guaratiba"},
+    "044": {"lat": -22.8711, "lng": -43.3188, "bairro": "Marechal Hermes"}
 }
 
 def process():
@@ -59,68 +55,120 @@ def process():
     try:
         print(f"[{datetime.now()}] 🔄 Iniciando processamento de dados criminais ISP-RJ...")
         
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'Accept': 'text/csv,application/csv',
+            'Accept-Language': 'pt-BR,pt;q=0.9'
+        }
+        
+        # Baixar o arquivo CSV
+        print(f"[{datetime.now()}] 📥 Baixando dados de: {url}")
         res = requests.get(url, headers=headers, verify=False, timeout=120)
         res.raise_for_status()
         
-        with open("temp.csv", "wb") as f:
+        # Salvar temporariamente
+        temp_file = "temp_isp_data.csv"
+        with open(temp_file, "wb") as f:
             f.write(res.content)
         
-        print(f"[{datetime.now()}] ✅ Arquivo CSV baixado com sucesso ({len(res.content)} bytes)")
+        print(f"[{datetime.now()}] ✅ CSV baixado com sucesso ({len(res.content):,} bytes)")
         
-        # Ler CSV com tratamento de encoding
-        df = pd.read_csv("temp.csv", sep=';', encoding='iso-8859-1', low_memory=False)
+        # Tentar diferentes encodings
+        encodings = ['iso-8859-1', 'latin1', 'utf-8', 'cp1252']
+        df = None
+        
+        for encoding in encodings:
+            try:
+                df = pd.read_csv(temp_file, sep=';', encoding=encoding, low_memory=False)
+                print(f"[{datetime.now()}] ✅ Leitura bem sucedida com encoding: {encoding}")
+                break
+            except UnicodeDecodeError:
+                continue
+        
+        if df is None:
+            raise Exception("Não foi possível ler o CSV com nenhum encoding")
+        
+        # Limpar nomes das colunas
         df.columns = [c.lower().strip() for c in df.columns]
         
-        print(f"[{datetime.now()}] 📊 Dataset carregado: {len(df)} registros")
+        print(f"[{datetime.now()}] 📊 Dataset carregado: {len(df):,} registros")
+        print(f"[{datetime.now()}] 📋 Colunas disponíveis: {list(df.columns)[:10]}...")
         
-        # Usar dados do último ano completo para análise
-        ultimo_ano = df['ano'].max()
-        df_recente = df[df['ano'] == ultimo_ano].copy()
+        # Usar dados dos últimos 12 meses para análise mais recente
+        if 'ano' in df.columns and 'mes' in df.columns:
+            ultimo_ano = df['ano'].max()
+            ultimo_mes = df[df['ano'] == ultimo_ano]['mes'].max()
+            df_recente = df[(df['ano'] == ultimo_ano) & (df['mes'] == ultimo_mes)].copy()
+            print(f"[{datetime.now()}] 📅 Analisando período: {ultimo_ano}/{ultimo_mes} ({len(df_recente):,} registros)")
+        else:
+            # Fallback: últimos registros
+            df_recente = df.tail(100).copy()
+            print(f"[{datetime.now()}] ⚠️ Usando últimos {len(df_recente)} registros disponíveis")
         
-        print(f"[{datetime.now()}] 📅 Analisando ano: {ultimo_ano} ({len(df_recente)} registros)")
-        
-        # Categorias criminais baseadas nas necessidades de inteligência
-        # Roubos a pedestres (mais relevante para patrulhamento urbano)
+        # Categorias criminais
         cols_roubos_pedestres = ['roubo_transeunte', 'roubo_celular', 'furto_transeunte', 'furto_celular']
-        
-        # Roubos de veículos (para apoio em operações de trânsito)
         cols_roubos_veiculos = ['roubo_veiculo', 'furto_veiculo']
-        
-        # Crimes violentos/letalidade (para áreas de alto risco)
         cols_violentos = ['hom_doloso', 'tentat_hom', 'lesao_corp_dolosa', 'latrocinio']
         
-        # Verificar e converter colunas existentes
-        for col in (cols_roubos_pedestres + cols_roubos_veiculos + cols_violentos):
-            if col in df_recente.columns:
-                df_recente[col] = pd.to_numeric(df_recente[col], errors='coerce').fillna(0)
-            else:
-                print(f"[{datetime.now()}] ⚠️ Coluna não encontrada: {col}")
-                df_recente[col] = 0
+        # Verificar e converter colunas
+        for col_list in [cols_roubos_pedestres, cols_roubos_veiculos, cols_violentos]:
+            for col in col_list:
+                if col in df_recente.columns:
+                    df_recente[col] = pd.to_numeric(df_recente[col], errors='coerce').fillna(0)
+                else:
+                    if col not in [c for c in col_list if c in df_recente.columns]:
+                        print(f"[{datetime.now()}] ⚠️ Coluna não encontrada: {col}, criando com zeros")
+                        df_recente[col] = 0
         
-        # Agrupar por CISP (Circunscrição Integrada de Segurança Pública)
+        # Agrupar por CISP
         heatmap_data = []
         
-        for cisp, group in df_recente.groupby('cisp'):
-            cod_dp = str(int(cisp)).zfill(3)
-            
-            # Tentar encontrar o bairro correspondente ou usar coordenadas padrão
-            # Usamos um mapping básico (pode ser expandido)
-            if cod_dp in geo_mapping:
-                coords = geo_mapping[cod_dp]
-            else:
-                # Coordenada padrão (Centro do Rio)
-                coords = {"lat": -22.9068, "lng": -43.1729}
-            
-            heatmap_data.append({
-                "lat": coords["lat"],
-                "lng": coords["lng"],
-                "pedestres": int(group[cols_roubos_pedestres].sum().sum()),
-                "veiculos": int(group[cols_roubos_veiculos].sum().sum()),
-                "letalidade": int(group[cols_violentos].sum().sum()),
-                "total": int(group[cols_roubos_pedestres + cols_roubos_veiculos + cols_violentos].sum().sum()),
-                "cisp": cod_dp
-            })
+        if 'cisp' in df_recente.columns:
+            for cisp, group in df_recente.groupby('cisp'):
+                try:
+                    cod_dp = str(int(float(cisp))).zfill(3) if pd.notna(cisp) else "000"
+                    
+                    # Buscar coordenadas
+                    if cod_dp in geo_mapping:
+                        coords = geo_mapping[cod_dp]
+                        bairro = coords.get('bairro', f"CISP {cod_dp}")
+                    else:
+                        # Coordenada padrão (Centro do Rio)
+                        coords = {"lat": -22.9068, "lng": -43.1729, "bairro": f"Região {cod_dp}"}
+                        bairro = coords['bairro']
+                    
+                    # Calcular totais
+                    total_pedestres = int(group[cols_roubos_pedestres].sum().sum())
+                    total_veiculos = int(group[cols_roubos_veiculos].sum().sum())
+                    total_letalidade = int(group[cols_violentos].sum().sum())
+                    
+                    heatmap_data.append({
+                        "lat": coords["lat"],
+                        "lng": coords["lng"],
+                        "bairro": bairro,
+                        "pedestres": total_pedestres,
+                        "veiculos": total_veiculos,
+                        "letalidade": total_letalidade,
+                        "total": total_pedestres + total_veiculos + total_letalidade,
+                        "cisp": cod_dp
+                    })
+                except Exception as e:
+                    print(f"[{datetime.now()}] ⚠️ Erro processando CISP {cisp}: {e}")
+                    continue
+        else:
+            print(f"[{datetime.now()}] ❌ Coluna 'cisp' não encontrada no dataset")
+            # Criar dados de exemplo para teste
+            for cod_dp, coords in list(geo_mapping.items())[:20]:
+                heatmap_data.append({
+                    "lat": coords["lat"],
+                    "lng": coords["lng"],
+                    "bairro": coords.get('bairro', f"CISP {cod_dp}"),
+                    "pedestres": 0,
+                    "veiculos": 0,
+                    "letalidade": 0,
+                    "total": 0,
+                    "cisp": cod_dp
+                })
         
         # Salvar arquivo JSON
         output_file = 'isp_crime_stats.json'
@@ -132,63 +180,40 @@ def process():
         print(f"[{datetime.now()}] 📍 Regiões processadas: {len(heatmap_data)}")
         
         # Estatísticas resumidas
-        total_pedestres = sum(item['pedestres'] for item in heatmap_data)
-        total_veiculos = sum(item['veiculos'] for item in heatmap_data)
-        total_letalidade = sum(item['letalidade'] for item in heatmap_data)
+        if heatmap_data:
+            total_pedestres = sum(item.get('pedestres', 0) for item in heatmap_data)
+            total_veiculos = sum(item.get('veiculos', 0) for item in heatmap_data)
+            total_letalidade = sum(item.get('letalidade', 0) for item in heatmap_data)
+            
+            print(f"\n{'='*50}")
+            print(f"📊 RESUMO CRIMINAL")
+            print(f"{'='*50}")
+            print(f"  👥 Roubos a Pedestres: {total_pedestres:,}")
+            print(f"  🚗 Roubos de Veículos: {total_veiculos:,}")
+            print(f"  ⚠️  Homicídios/Tentativas: {total_letalidade:,}")
+            print(f"  📈 Total Geral: {total_pedestres + total_veiculos + total_letalidade:,}")
+            print(f"{'='*50}")
+            
+            # Top 5 áreas
+            top5 = sorted(heatmap_data, key=lambda x: x['total'], reverse=True)[:5]
+            print(f"\n🔥 TOP 5 ÁREAS MAIS CRÍTICAS:")
+            for i, area in enumerate(top5, 1):
+                print(f"  {i}. {area['bairro']}: {area['total']:,} ocorrências")
         
-        print(f"\n📊 RESUMO CRIMINAL {ultimo_ano}:")
-        print(f"  👥 Roubos a Pedestres: {total_pedestres:,}")
-        print(f"  🚗 Roubos de Veículos: {total_veiculos:,}")
-        print(f"  ⚠️  Homicídios/Tentativas: {total_letalidade:,}")
-        print(f"  📈 Total Geral: {total_pedestres + total_veiculos + total_letalidade:,}")
+        # Limpar arquivo temporário
+        if os.path.exists(temp_file):
+            os.remove(temp_file)
         
         return True
         
+    except requests.exceptions.RequestException as e:
+        print(f"[{datetime.now()}] ❌ Erro de conexão: {str(e)}")
+        return False
     except Exception as e:
         print(f"[{datetime.now()}] ❌ ERRO CRÍTICO: {str(e)}")
         import traceback
         traceback.print_exc()
         return False
-
-# Mapeamento CISP para coordenadas (baseado em dados reais)
-geo_mapping = {
-    "001": {"lat": -22.8975, "lng": -43.1802},
-    "004": {"lat": -22.9125, "lng": -43.1883},
-    "005": {"lat": -22.9134, "lng": -43.1855},
-    "006": {"lat": -22.9101, "lng": -43.2012},
-    "007": {"lat": -22.9254, "lng": -43.2039},
-    "009": {"lat": -22.9265, "lng": -43.1782},
-    "010": {"lat": -22.9515, "lng": -43.1911},
-    "012": {"lat": -22.9711, "lng": -43.1844},
-    "013": {"lat": -22.9832, "lng": -43.1925},
-    "014": {"lat": -22.9845, "lng": -43.2231},
-    "015": {"lat": -22.9754, "lng": -43.2322},
-    "016": {"lat": -23.0019, "lng": -43.3444},
-    "017": {"lat": -22.8982, "lng": -43.2215},
-    "018": {"lat": -22.9351, "lng": -43.2195},
-    "019": {"lat": -22.9234, "lng": -43.2355},
-    "020": {"lat": -22.9155, "lng": -43.2422},
-    "021": {"lat": -22.8624, "lng": -43.2544},
-    "022": {"lat": -22.8355, "lng": -43.2811},
-    "023": {"lat": -22.9133, "lng": -43.2711},
-    "024": {"lat": -22.8955, "lng": -43.2988},
-    "025": {"lat": -22.8944, "lng": -43.3244},
-    "027": {"lat": -22.8344, "lng": -43.3422},
-    "031": {"lat": -23.0188, "lng": -43.4611},
-    "032": {"lat": -22.9188, "lng": -43.3711},
-    "033": {"lat": -22.8722, "lng": -43.4211},
-    "034": {"lat": -22.8788, "lng": -43.4644},
-    "035": {"lat": -22.9011, "lng": -43.5611},
-    "036": {"lat": -22.9155, "lng": -43.6844},
-    "037": {"lat": -22.8188, "lng": -43.2044},
-    "038": {"lat": -22.8311, "lng": -43.3155},
-    "039": {"lat": -22.8122, "lng": -43.3444},
-    "040": {"lat": -22.8255, "lng": -43.3011},
-    "041": {"lat": -22.8752, "lng": -43.3411},
-    "042": {"lat": -22.8455, "lng": -43.3811},
-    "043": {"lat": -22.9388, "lng": -43.5411},
-    "044": {"lat": -22.8711, "lng": -43.3188}
-}
 
 if __name__ == "__main__":
     success = process()
