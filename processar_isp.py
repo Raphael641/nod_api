@@ -6,7 +6,7 @@ from datetime import datetime
 import os
 import time
 
-# Mapeamento CISP para coordenadas (baseado em dados reais das delegacias)
+# Mapeamento CISP para coordenadas e BAIRROS REAIS
 geo_mapping = {
     "001": {"lat": -22.8975, "lng": -43.1802, "bairro": "Centro"},
     "004": {"lat": -22.9125, "lng": -43.1883, "bairro": "Lapa"},
@@ -43,7 +43,12 @@ geo_mapping = {
     "041": {"lat": -22.8752, "lng": -43.3411, "bairro": "Rocha Miranda"},
     "042": {"lat": -22.8455, "lng": -43.3811, "bairro": "Coelho Neto"},
     "043": {"lat": -22.9388, "lng": -43.5411, "bairro": "Guaratiba"},
-    "044": {"lat": -22.8711, "lng": -43.3188, "bairro": "Marechal Hermes"}
+    "044": {"lat": -22.8711, "lng": -43.3188, "bairro": "Marechal Hermes"},
+    "059": {"lat": -22.8542, "lng": -43.2555, "bairro": "Complexo do Alemão"},
+    "060": {"lat": -22.8688, "lng": -43.2444, "bairro": "Maré"},
+    "061": {"lat": -22.9888, "lng": -43.2511, "bairro": "Rocinha"},
+    "062": {"lat": -22.9955, "lng": -43.2411, "bairro": "Vidigal"},
+    "063": {"lat": -22.9388, "lng": -43.3911, "bairro": "Cidade de Deus"}
 }
 
 def download_with_retry(url, max_retries=3):
