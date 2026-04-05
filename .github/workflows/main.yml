@@ -1,35 +1,60 @@
-name: Atualizar Mancha Criminal NOD
+name: Atualizar Mancha Criminal NOD ISP-RJ
 
 on:
   schedule:
-    - cron: '0 5 * * 1'
+    # Executa toda segunda-feira às 6h da manhã
+    - cron: '0 6 * * 1'
+  # Permite execução manual via GitHub UI
   workflow_dispatch:
 
 jobs:
-  build:
+  atualizar-dados-criminais:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Permissão crucial para o robô salvar o arquivo no GitHub
-
+      contents: write  # Permissão essencial para salvar o JSON
+    
     steps:
-      - name: Checkout do código
+      - name: 📥 Checkout do código fonte
         uses: actions/checkout@v4
-
-      - name: Configurar Python
+      
+      - name: 🐍 Configurar Python 3.10
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-
-      - name: Instalar dependências
-        run: pip install pandas requests
-
-      - name: Processar Dados do ISP
-        run: python processar_isp.py
-
-      - name: Salvar JSON no Repositório GitHub
+          cache: 'pip'
+      
+      - name: 📦 Instalar dependências
         run: |
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@github.com"
+          python -m pip install --upgrade pip
+          pip install pandas requests
+      
+      - name: 🚀 Processar dados criminais do ISP-RJ
+        run: python processar_isp.py
+        continue-on-error: false
+      
+      - name: 📊 Validar arquivo gerado
+        run: |
+          if [ ! -f "isp_crime_stats.json" ]; then
+            echo "❌ Arquivo JSON não foi gerado!"
+            exit 1
+          fi
+          echo "✅ Arquivo JSON gerado com sucesso"
+          echo "📏 Tamanho: $(wc -c < isp_crime_stats.json) bytes"
+          echo "📝 Primeiras linhas:"
+          head -n 20 isp_crime_stats.json
+      
+      - name: 💾 Salvar JSON no repositório
+        run: |
+          git config --global user.name "NOD Bot - ISP Integration"
+          git config --global user.email "nod-bot@gm-rio.rj.gov.br"
           git add isp_crime_stats.json
-          git commit -m "Atualizando mancha criminal: $(date)" || echo "Sem mudanças"
+          git commit -m "🤖 Atualização automática da mancha criminal ISP-RJ - $(date '+%d/%m/%Y %H:%M')" || echo "📭 Sem alterações para commit"
           git push
+      
+      - name: ✅ Notificar conclusão
+        if: success()
+        run: echo "🎉 Dados criminais atualizados com sucesso em $(date)"
+      
+      - name: ❌ Notificar falha
+        if: failure()
+        run: echo "⚠️ Falha na atualização dos dados criminais - verificar logs"
