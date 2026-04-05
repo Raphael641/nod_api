@@ -3,7 +3,7 @@ import json
 import requests
 import sys
 
-# Dicionário Geográfico Expandido (Coordenadas Centrais das CISPs)
+# Coordenadas Centrais das Delegacias da Capital (RJ)
 geo_dps = {
     "001": {"lat": -22.8975, "lng": -43.1802}, "004": {"lat": -22.9125, "lng": -43.1883},
     "005": {"lat": -22.9134, "lng": -43.1855}, "006": {"lat": -22.9101, "lng": -43.2012},
@@ -22,58 +22,46 @@ geo_dps = {
     "041": {"lat": -22.8752, "lng": -43.3411}, "044": {"lat": -22.8711, "lng": -43.3188}
 }
 
-def process_isp():
-    # Usando a base de CISP (Delegacias) para maior precisão de bairros
+def download_and_process():
     url = "https://www.ispdados.rj.gov.br/Arquivos/BaseDPEvolucaoMensalCisp.csv"
-    headers = {'User-Agent': 'Mozilla/5.0'}
-    
     try:
+        headers = {'User-Agent': 'Mozilla/5.0'}
         res = requests.get(url, headers=headers, verify=False)
-        with open("temp.csv", "wb") as f:
-            f.write(res.content)
-            
-        df = pd.read_csv("temp.csv", sep=';', encoding='iso-8859-1')
+        with open("temp.csv", "wb") as f: f.write(res.content)
+        
+        df = pd.read_csv("temp.csv", sep=';', encoding='iso-8859-1', low_memory=False)
         df.columns = [c.lower().strip() for c in df.columns]
-
-        # Filtro: Últimos 12 meses disponíveis
+        
         ultimo_ano = df['ano'].max()
-        df = df[df['ano'] == ultimo_ano].copy()
-
-        # Definição das colunas para os filtros operacionais de Drones
-        col_pedestres = ['roubo_transeunte', 'roubo_celular', 'furto_transeunte', 'furto_celular']
-        col_veiculos = ['roubo_veiculo', 'furto_veiculos']
-        col_violencia = ['hom_doloso', 'tentat_hom', 'lesao_corp_dolosa']
+        df_recente = df[df['ano'] == ultimo_ano].copy()
+        
+        # CATEGORIAS TÁTICAS PARA GM-RIO
+        # Furtos a pedestres (Celular e transeunte)
+        cols_furtos = ['furto_celular', 'furto_transeunte']
+        # Roubos (Veículo e Rua)
+        cols_roubos = ['roubo_veiculo', 'roubo_transeunte', 'roubo_celular']
+        # Letalidade
+        cols_violencia = ['hom_doloso', 'tentat_hom']
 
         heatmap_data = []
-
-        for cisp, group in df.groupby('cisp'):
+        for cisp, group in df_recente.groupby('cisp'):
             cod_dp = str(int(cisp)).zfill(3)
-            
             if cod_dp in geo_dps:
-                # Cálculo de Pesos por Categoria
-                p_pedestres = group[col_pedestres].sum().sum()
-                p_veiculos = group[col_veiculos].sum().sum()
-                p_violencia = group[col_violencia].sum().sum()
-                p_total = p_pedestres + p_veiculos + p_violencia
-
-                if p_total > 0:
-                    heatmap_data.append({
-                        "lat": geo_dps[cod_dp]["lat"],
-                        "lng": geo_dps[cod_dp]["lng"],
-                        "pedestres": int(p_pedestres),
-                        "veiculos": int(p_veiculos),
-                        "violencia": int(p_violencia),
-                        "total": int(p_total)
-                    })
-
+                heatmap_data.append({
+                    "lat": geo_dps[cod_dp]["lat"],
+                    "lng": geo_dps[cod_dp]["lng"],
+                    "total": int(group[cols_furtos + cols_roubos + cols_violencia].sum().sum()),
+                    "furtos": int(group[cols_furtos].sum().sum()),
+                    "roubos": int(group[cols_roubos].sum().sum()),
+                    "homicidios": int(group[cols_violencia].sum().sum())
+                })
+        
         with open('isp_crime_stats.json', 'w', encoding='utf-8') as f:
             json.dump(heatmap_data, f)
-            
-        print(f"Sucesso: {len(heatmap_data)} regiões processadas estatisticamente.")
-
+        print("Base estratégica v11 gerada.")
     except Exception as e:
-        print(f"Erro: {e}")
+        print(f"Falha: {e}")
         sys.exit(1)
 
 if __name__ == "__main__":
-    process_isp()
+    download_and_process()
