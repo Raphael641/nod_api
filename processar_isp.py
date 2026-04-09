@@ -188,25 +188,26 @@ def process():
                 # Limpar nomes das colunas
                 df.columns = [c.lower().strip() for c in df.columns]
                 
+                # --- CORREÇÃO AQUI: FILTRAR APENAS MUNICÍPIO DO RIO ---
+                if 'munic' in df.columns:
+                    df = df[df['munic'] == 'Rio de Janeiro']
+                    print(f"[{datetime.now()}] 📍 Filtrado apenas Município do Rio de Janeiro.")
+                
                 print(f"[{datetime.now()}] 📊 Dataset carregado: {len(df):,} registros")
-                print(f"[{datetime.now()}] 📋 Colunas encontradas: {', '.join(list(df.columns)[:15])}")
                 
                 # Usar dados mais recentes
                 if 'ano' in df.columns and 'mes' in df.columns:
                     ultimo_ano = df['ano'].max()
                     ultimo_mes = df[df['ano'] == ultimo_ano]['mes'].max()
                     df_recente = df[(df['ano'] == ultimo_ano) & (df['mes'] == ultimo_mes)].copy()
-                    print(f"[{datetime.now()}] 📅 Analisando período: {ultimo_ano}/{ultimo_mes} ({len(df_recente):,} registros)")
                 else:
                     df_recente = df.tail(200).copy()
-                    print(f"[{datetime.now()}] ⚠️ Usando últimos {len(df_recente)} registros")
                 
-                # Categorias criminais
+                # Categorias criminais (mantenha igual)
                 cols_roubos_pedestres = ['roubo_transeunte', 'roubo_celular', 'furto_transeunte', 'furto_celular']
                 cols_roubos_veiculos = ['roubo_veiculo', 'furto_veiculo']
                 cols_violentos = ['hom_doloso', 'tentat_hom', 'lesao_corp_dolosa', 'latrocinio']
                 
-                # Verificar e converter colunas
                 for col_list in [cols_roubos_pedestres, cols_roubos_veiculos, cols_violentos]:
                     for col in col_list:
                         if col in df_recente.columns:
@@ -214,7 +215,6 @@ def process():
                         else:
                             df_recente[col] = 0
                 
-                # Agrupar por CISP
                 heatmap_data = []
                 
                 if 'cisp' in df_recente.columns:
@@ -222,26 +222,28 @@ def process():
                         try:
                             cod_dp = str(int(float(cisp))).zfill(3) if pd.notna(cisp) else "000"
                             
+                            # --- SEGUNDA CORREÇÃO: IGNORAR CISPS QUE NÃO ESTÃO NO RIO (CAPITAL) ---
                             if cod_dp in geo_mapping:
                                 coords = geo_mapping[cod_dp]
+                                
+                                total_pedestres = int(group[cols_roubos_pedestres].sum().sum())
+                                total_veiculos = int(group[cols_roubos_veiculos].sum().sum())
+                                total_letalidade = int(group[cols_violentos].sum().sum())
+                                
+                                heatmap_data.append({
+                                    "lat": coords["lat"],
+                                    "lng": coords["lng"],
+                                    "bairro": coords.get('bairro', f"CISP {cod_dp}"),
+                                    "pedestres": total_pedestres,
+                                    "veiculos": total_veiculos,
+                                    "letalidade": total_letalidade,
+                                    "total": total_pedestres + total_veiculos + total_letalidade,
+                                    "cisp": cod_dp,
+                                    "fonte": "isp_oficial"
+                                })
                             else:
-                                coords = {"lat": -22.9068, "lng": -43.1729, "bairro": f"Região {cod_dp}"}
-                            
-                            total_pedestres = int(group[cols_roubos_pedestres].sum().sum())
-                            total_veiculos = int(group[cols_roubos_veiculos].sum().sum())
-                            total_letalidade = int(group[cols_violentos].sum().sum())
-                            
-                            heatmap_data.append({
-                                "lat": coords["lat"],
-                                "lng": coords["lng"],
-                                "bairro": coords.get('bairro', f"CISP {cod_dp}"),
-                                "pedestres": total_pedestres,
-                                "veiculos": total_veiculos,
-                                "letalidade": total_letalidade,
-                                "total": total_pedestres + total_veiculos + total_letalidade,
-                                "cisp": cod_dp,
-                                "fonte": "isp_oficial"
-                            })
+                                # Se não está no mapeamento do Rio, ignora (não processa São Gonçalo, etc)
+                                continue
                         except Exception as e:
                             continue
                 else:
