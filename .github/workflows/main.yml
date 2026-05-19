@@ -38,20 +38,24 @@ jobs:
       - name: Processar dados de trânsito (GM-RIO/Prefeitura)
         run: python processar_transito.py # O script que baixa o CSV e gera o JSON
       
-      - name: Configurar Git e fazer push
+     - name: Configurar Git e fazer push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name "NOD Bot"
           git config --global user.email "nod-bot@users.noreply.github.com"
-          git pull origin main --no-rebase --autostash || true
           
-          # Adiciona os dois arquivos
+          # Garante que temos a última versão
+          git pull origin main --rebase
+          
+          # Adiciona explicitamente os arquivos
           git add isp_crime_stats.json transito_stats.json
           
+          # Verifica se há mudanças reais
           if git diff --cached --quiet; then
-            echo "📭 Sem alterações nos arquivos JSON"
+            echo "📭 Sem alterações nos arquivos JSON. Nada a commitar."
           else
             git commit -m "🤖 Atualização de Inteligência (ISP + Trânsito) - $(date '+%Y-%m-%d %H:%M:%S')"
             git push origin main
+            echo "✅ Push realizado com sucesso!"
           fi
