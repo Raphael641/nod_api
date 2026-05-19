@@ -1,4 +1,4 @@
-name: Atualizar Mancha Criminal NOD ISP-RJ
+name: Atualizar Inteligência NOD (ISP + Trânsito)
 
 on:
   schedule:
@@ -8,6 +8,7 @@ on:
     branches: [ main ]
     paths:
       - 'processar_isp.py'
+      - 'processar_transito.py' # Gatilho se você editar o script de trânsito
 
 jobs:
   atualizar-dados:
@@ -19,7 +20,7 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Busca todo o histórico para evitar conflitos
+          fetch-depth: 0
       
       - name: Configurar Python
         uses: actions/setup-python@v5
@@ -29,57 +30,28 @@ jobs:
       - name: Instalar dependências
         run: |
           python -m pip install --upgrade pip
-          pip install pandas requests urllib3
+          pip install pandas requests
       
-      - name: Processar dados criminais
+      - name: Processar dados criminais (ISP)
         run: python processar_isp.py
-        continue-on-error: false
       
-      - name: Verificar arquivo gerado
-        run: |
-          if [ -f "isp_crime_stats.json" ]; then
-            echo "✅ JSON gerado com sucesso!"
-            echo "📊 Tamanho: $(wc -c < isp_crime_stats.json) bytes"
-            echo "📝 Primeiras linhas:"
-            head -c 500 isp_crime_stats.json
-          else
-            echo "❌ Falha na geração do JSON"
-            exit 1
-          fi
+      - name: Processar dados de trânsito (GM-RIO/Prefeitura)
+        run: python processar_transito.py # O script que baixa o CSV e gera o JSON
       
       - name: Configurar Git e fazer push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Configurar usuário
           git config --global user.name "NOD Bot"
           git config --global user.email "nod-bot@users.noreply.github.com"
-          
-          # Buscar as últimas alterações do remoto
-          git fetch origin main
-          
-          # Fazer merge ou rebase para resolver conflitos
           git pull origin main --no-rebase --autostash || true
           
-          # Adicionar o arquivo
-          git add isp_crime_stats.json
+          # Adiciona os dois arquivos
+          git add isp_crime_stats.json transito_stats.json
           
-          # Verificar se há mudanças para commit
           if git diff --cached --quiet; then
-            echo "📭 Sem alterações no arquivo JSON"
+            echo "📭 Sem alterações nos arquivos JSON"
           else
-            # Commit das mudanças
-            git commit -m "🤖 Atualização automática ISP-RJ - $(date '+%Y-%m-%d %H:%M:%S')"
-            
-            # Tentar push com retry
-            for i in 1 2 3; do
-              if git push origin main; then
-                echo "✅ Push realizado com sucesso!"
-                break
-              else
-                echo "⚠️ Tentativa $i falhou, tentando novamente..."
-                git pull origin main --rebase
-                sleep 2
-              fi
-            done
+            git commit -m "🤖 Atualização de Inteligência (ISP + Trânsito) - $(date '+%Y-%m-%d %H:%M:%S')"
+            git push origin main
           fi
